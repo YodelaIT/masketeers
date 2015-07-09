@@ -1,14 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.masketeers;
+
+import java.util.Random;
 
 /**
  *
- * @author brecht
+ * @author Yodela IT
  */
 public class Masketeers {
-    
+    public static void main(String[] args) {
+        Random rm = new Random();
+        System.out.println(String.format("Your moeitemeter value is: %d", rm.nextInt()));
+    }
 }

@@ -1,4 +1,5 @@
 package com.masketeers;
+
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -15,6 +16,12 @@ public class Masketeers {
     // We need to strongly reference callback instances.
     private GLFWErrorCallback errorCallback;
     private GLFWKeyCallback keyCallback;
+    private double lastLoopTime;
+    private float timeCount;
+    private int fps;
+    private int fpsCount;
+    private int ups;
+    private int upsCount;
 
     // The window handle
     private long window;
@@ -55,7 +62,7 @@ public class Masketeers {
         int HEIGHT = 300;
 
         // Create the window
-        window = glfwCreateWindow(WIDTH, HEIGHT, "Hello World!", NULL, NULL);
+        window = glfwCreateWindow(WIDTH, HEIGHT, "Masketeers!", NULL, NULL);
         if (window == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
         }
@@ -86,6 +93,7 @@ public class Masketeers {
 
         // Make the window visible
         glfwShowWindow(window);
+        lastLoopTime = getTime();
     }
 
     private void loop() {
@@ -103,12 +111,16 @@ public class Masketeers {
         // the window or has pressed the ESCAPE key.
         while (glfwWindowShouldClose(window) == GL_FALSE) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
-
             glfwSwapBuffers(window); // swap the color buffers
 
             // Poll for window events. The key callback above will only be
             // invoked during this call.
             glfwPollEvents();
+            
+            getDelta();
+            updateFPS();
+            update();
+            System.out.println(fps);
         }
     }
 
@@ -117,4 +129,35 @@ public class Masketeers {
         new Masketeers().run();
     }
 
+    public double getTime() {
+        return glfwGetTime();
+    }
+
+    public float getDelta() {
+        double time = getTime();
+        float delta = (float) (time - lastLoopTime);
+        lastLoopTime = time;
+        timeCount += delta;
+        return delta;
+    }
+
+    public void updateFPS() {
+        fpsCount++;
+    }
+
+    public void updateUPS() {
+        upsCount++;
+    }
+
+    public void update() {
+        if (timeCount > 1f) {
+            fps = fpsCount;
+            fpsCount = 0;
+
+            ups = upsCount;
+            upsCount = 0;
+
+            timeCount -= 1f;
+        }
+    }
 }
